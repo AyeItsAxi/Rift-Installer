@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RiftInstaller"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
+        Title="Rift installer by 1 24 9#0422" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
     <Grid Background="#FF0B0A10">
         <Border BorderBrush="Black" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
         <TextBlock HorizontalAlignment="Left" Margin="5,2,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="White" FontFamily="Corbel Light" FontSize="10" MouseDown="DragBar"/>
@@ -84,6 +84,6 @@
                 </Style>
             </Button.Style>
         </Button>
-        <TextBlock Name="Status" HorizontalAlignment="Center" Margin="0,272,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="800" TextAlignment="Center" Foreground="#FF2D2D2D" FontFamily="Segoe UI Variable Text Light" FontSize="10"/>
+        <TextBlock Name="Status" HorizontalAlignment="Center" Margin="0,272,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="800" TextAlignment="Center" Foreground="#FF656565" FontFamily="Segoe UI Variable Text Light" FontSize="10"/>
     </Grid>
 </Window>

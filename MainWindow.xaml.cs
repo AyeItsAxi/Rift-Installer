@@ -108,6 +108,7 @@ namespace RiftInstaller
             catch (Exception ex)
             {
                 MessageBox.Show("Finishing the download failed! Error message: " + ex.Message);
+                this.Close();
             }
         }
     }
