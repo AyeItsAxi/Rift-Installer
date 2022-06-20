@@ -6,12 +6,4 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="rift.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="rift.png" />
-  </ItemGroup>
-
 </Project>
