@@ -112,8 +112,7 @@ namespace RiftInstaller
             try
             {
                 string name = "dotnet.exe";
-                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name);
-                MessageBox.Show("Once .Net is finished installing, run Rift. It may ask if you want to install Microsoft WebView2, if it does, click yes. Try to run Rift again, and if it doesn't, create a ticket in the Rift discord server and the support team will try to assist you as fast as possible.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name).WaitForExit();
                 WebClient wc = new WebClient();
                 wc.DownloadFile("https://cdn.discordapp.com/attachments/972611854524354570/997363999995867246/rift.ico", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico");
                 SetEnvironmentVariable();
@@ -126,6 +125,7 @@ namespace RiftInstaller
                 IPersistFile file = (IPersistFile)link;
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
+                MessageBox.Show("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
                 Status.Text = "";
                 InstallButton.Content = "Installed";
                 InstallButton.IsEnabled = false;
