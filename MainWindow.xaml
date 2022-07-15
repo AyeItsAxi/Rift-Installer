@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RiftInstaller"
         mc:Ignorable="d"
-        Title="Rift installer by 1 24 9#0422" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
-    <Grid Background="#FF0B0A10">
-        <Border BorderBrush="Black" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
+        Title="Rift Installer" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
+    <Grid Background="#FF14151b">
+        <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
         <TextBlock HorizontalAlignment="Left" Margin="5,2,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="White" FontFamily="Corbel Light" FontSize="10" MouseDown="DragBar"/>
         <Button Content="r" HorizontalAlignment="Left" Margin="779,0,0,0" VerticalAlignment="Top" Height="16" Width="21" BorderBrush="#FF1F1F1F" Foreground="White" Background="Black" FontFamily="Marlett" Click="CloseWindow" Opacity="0.6">
             <Button.Resources>
@@ -45,10 +45,10 @@
                 </Style>
             </Button.Style>
         </Button>
-        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Welcome to the Rift installer!" VerticalAlignment="Top" FontFamily="Calibri Light" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="53"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="This installer was created by 1 24 9 with help from Ahava to help with the installation of Rift, as people have many issues when downloading. Most commonly, people don't download the correct version of .NET CORE. This installer automatically installs Rift and its requirements." VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Text Light" Width="564" TextAlignment="Center" Height="109" FontSize="18"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,205,0,0" TextWrapping="Wrap" Text="Note: before installing, make sure 'Real Time Protection' is turned off in your Windows Defender settings." VerticalAlignment="Top" Foreground="#FF525252" FontSize="11"/>
-        <Button Name="InstallButton" Content="Install" HorizontalAlignment="Center" Margin="0,243,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="Black" FontFamily="Candara Light" Click="Install">
+        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Welcome to the Rift installer!" VerticalAlignment="Top" FontFamily="Segoe UI Variable Display Light" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="53"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="This installer was created by 1 24 9 with help from Ahava to help with the installation of Rift, as people have many issues when downloading. Most commonly, people don't download the correct version of .Net core. This installer automatically installs Rift and its requirements." VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Display Light" Width="564" TextAlignment="Center" Height="109" FontSize="18"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,205,0,0" TextWrapping="Wrap" Text="Note: before installing, make sure 'Real Time Protection' is turned off in your antivirus settings." VerticalAlignment="Top" Foreground="#FF525252" FontSize="11" FontFamily="Segoe UI Variable Text Light"/>
+        <Button Name="InstallButton" Content="Install" HorizontalAlignment="Center" Margin="0,243,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="#FF101010" FontFamily="Candara Light" Click="Install">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="15"/>
@@ -69,14 +69,14 @@
                         <EventTrigger RoutedEvent="UIElement.MouseEnter">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.30" From="#000000" To="#FF252235"/>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#FF1F1F1F" To="#FF252235"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="UIElement.MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.30" From="#FF252235" To="#000000"/>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#FF252235" To="#FF1F1F1F"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
