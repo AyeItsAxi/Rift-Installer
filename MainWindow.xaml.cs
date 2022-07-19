@@ -58,7 +58,7 @@ namespace RiftInstaller
                 };
                 Process.Start(start);
                 string gzip = "Rift.zip";
-                WebClient webclient = new WebClient();
+                WebClient webclient = new();
                 webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadRiftCompletedCallback);
                 webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftDownloadProgressChanged);
                 webclient.DownloadFileAsync(new Uri("https://cdn.discordapp.com/attachments/972611854524354570/972611918885953546/Rift-2.2.0.5-B.zip"), gzip);
@@ -93,7 +93,7 @@ namespace RiftInstaller
             try
             {
                 string gzip = "dotnet.exe";
-                WebClient webclient = new WebClient();
+                WebClient webclient = new();
                 webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadDotNetCompletedCallback);
                 webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DotNetDownloadProgressChanged);
                 webclient.DownloadFileAsync(new Uri("https://download.visualstudio.microsoft.com/download/pr/962fa33f-e57c-4e8a-abc9-01882ff74e3d/23e11ee6c3da863fa1489f951aa7e75e/dotnet-sdk-3.1.417-win-x64.exe"), Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + gzip);
@@ -113,7 +113,7 @@ namespace RiftInstaller
             {
                 string name = "dotnet.exe";
                 Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name).WaitForExit();
-                WebClient wc = new WebClient();
+                WebClient wc = new();
                 wc.DownloadFile("https://cdn.discordapp.com/attachments/972611854524354570/997363999995867246/rift.ico", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico");
                 SetEnvironmentVariable();
                 Status.Text = "Creating desktop icon for Rift";
