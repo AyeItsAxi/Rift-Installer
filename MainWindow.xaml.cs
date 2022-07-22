@@ -61,7 +61,7 @@ namespace RiftInstaller
                 WebClient webclient = new();
                 webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadRiftCompletedCallback);
                 webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftDownloadProgressChanged);
-                webclient.DownloadFileAsync(new Uri("https://cdn.discordapp.com/attachments/972611854524354570/972611918885953546/Rift-2.2.0.5-B.zip"), gzip);
+                webclient.DownloadFileAsync(new Uri("https://cdn.discordapp.com/attachments/972611854524354570/1000161173720809522/Rift-2.2.0.6.zip"), gzip);
                 InstallButton.Content = "Installing...";
                 InstallButton.IsEnabled = false;
             }
