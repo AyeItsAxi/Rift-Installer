@@ -5,11 +5,10 @@ using System.Windows;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.IO.Compression;
-using System.Threading.Tasks;
-using System.ServiceProcess;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace RiftInstaller
 {
@@ -22,6 +21,8 @@ namespace RiftInstaller
         {
             InitializeComponent();
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\");
+            WebClient webclient = new();
+            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/ags-launcher-strings/killswitches/launcherinfo.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             if (Directory.Exists("Rift"))
             {
                 InstallButton.IsEnabled = false;
@@ -41,10 +42,12 @@ namespace RiftInstaller
 
         private void Install(object sender, RoutedEventArgs e)
         {
-            DownloadManager();
+            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
+            DownloadManager(JSD.Latest);
         }
 
-        private void DownloadManager()
+        private void DownloadManager(string InstallURL)
         {
             try
             {
@@ -61,7 +64,7 @@ namespace RiftInstaller
                 WebClient webclient = new();
                 webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadRiftCompletedCallback);
                 webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftDownloadProgressChanged);
-                webclient.DownloadFileAsync(new Uri("https://cdn.discordapp.com/attachments/972611854524354570/1000161173720809522/Rift-2.2.0.6.zip"), gzip);
+                webclient.DownloadFileAsync(new Uri(InstallURL), gzip);
                 InstallButton.Content = "Installing...";
                 InstallButton.IsEnabled = false;
             }
