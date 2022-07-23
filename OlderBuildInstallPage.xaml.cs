@@ -13,32 +13,21 @@ using Newtonsoft.Json;
 namespace RiftInstaller
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for OlderBuildInstallPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class OlderBuildInstallPage : Window
     {
-        public MainWindow()
+        public OlderBuildInstallPage()
         {
             InitializeComponent();
-            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\");
-            WebClient webclient = new();
-            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json"))
+            if (!Directory.Exists("Rift"))
             {
-                File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
-            }
-            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/strings.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
-            if (Directory.Exists("Rift"))
-            {
+                VersionText.Visibility = Visibility.Hidden;
+                Burger.Visibility = Visibility.Hidden;
+                Info.Margin = new Thickness(0, 129, 0, 0);
                 InstallButton.IsEnabled = false;
-                InstallButton.Content = "Installed";
-            }
-            if (File.Exists("Rift.Old.zip"))
-            {
-                File.Delete("Rift.Old.zip");
-            }
-            if (File.Exists("Rift.zip"))
-            {
-                File.Delete("Rift.zip");
+                InstallButton.Content = "Unavailable";
+                Info.Text = "You need to install the current version of Rift to be able to use this feature. Go back to the main page and install Rift to use this feature.";
             }
         }
 
@@ -53,20 +42,85 @@ namespace RiftInstaller
             Application.Current.Shutdown();
         }
 
-        private void ChangeWindow(object sender, RoutedEventArgs e)
-        {
-            OlderBuildInstallPage ipage = new();
-            ipage.Show();
-            this.Hide();
-        }
-
         private void Install(object sender, RoutedEventArgs e)
         {
             string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-            DownloadManager(JSD.Latest);
-        }
+            if (Directory.Exists("Rift.Old"))
+            {
+                MessageBoxResult UserConfirm = MessageBox.Show("It seems you already have an old version of Rift installed. Installing a different old version will overrite the currently installed old version of Rift. Are you sure?", "Rift Installer: Notice", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (UserConfirm == MessageBoxResult.Yes)
+                {
+                    //if anybody knows a better way of doing this please open a pull request
+                    Directory.Delete("Rift.Old", true);
+                    if (Burger.SelectedItem == ttoz)
+                    {
+                        DownloadManager(JSD.ttoz);
+                    }
+                    if (Burger.SelectedItem == ttoo)
+                    {
+                        DownloadManager(JSD.ttoo);
+                    }
+                    if (Burger.SelectedItem == ttotw)
+                    {
+                        DownloadManager(JSD.ttotw);
+                    }
+                    if (Burger.SelectedItem == ttoth)
+                    {
+                        DownloadManager(JSD.ttoth);
+                    }
+                    if (Burger.SelectedItem == ttof)
+                    {
+                        DownloadManager(JSD.ttof);
+                    }
+                    if (Burger.SelectedItem == ttofv)
+                    {
+                        DownloadManager(JSD.ttofv);
+                    }
+                    if (Burger.SelectedItem == ttofvb)
+                    {
+                        DownloadManager(JSD.ttofvb);
+                    }
+                }
+                else if (UserConfirm == MessageBoxResult.No)
+                {
 
+                }
+            }
+            else if (!Directory.Exists("Rift.Old"))
+            {
+                //if anybody knows a better way of doing this please open a pull request
+                if (Burger.SelectedItem == ttoz)
+                {
+                    DownloadManager(JSD.ttoz);
+                }
+                if (Burger.SelectedItem == ttoo)
+                {
+                    DownloadManager(JSD.ttoo);
+                }
+                if (Burger.SelectedItem == ttotw)
+                {
+                    DownloadManager(JSD.ttotw);
+                }
+                if (Burger.SelectedItem == ttoth)
+                {
+                    DownloadManager(JSD.ttoth);
+                }
+                if (Burger.SelectedItem == ttof)
+                {
+                    DownloadManager(JSD.ttof);
+                }
+                if (Burger.SelectedItem == ttofv)
+                {
+                    DownloadManager(JSD.ttofv);
+                }
+                if (Burger.SelectedItem == ttofvb)
+                {
+                    DownloadManager(JSD.ttofvb);
+                }
+            }
+        }
+        public string FolderName;
         public void DownloadManager(string InstallURL)
         {
             try
@@ -80,7 +134,7 @@ namespace RiftInstaller
                     CreateNoWindow = true,
                 };
                 Process.Start(start);
-                string gzip = "Rift.zip";
+                string gzip = "Rift.Old.zip";
                 WebClient webclient = new();
                 webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadRiftCompletedCallback);
                 webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftDownloadProgressChanged);
@@ -101,75 +155,33 @@ namespace RiftInstaller
         {
             try
             {
-                string gzip = "Rift.zip";
-                ZipFile.ExtractToDirectory(gzip, @"./Rift");
+                string gzip = "Rift.Old.zip";
+                ZipFile.ExtractToDirectory(gzip, @"./Rift.Old");
                 File.Delete(gzip);
-                DotNetDownload();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error finishing download: {ex}");
-            }
-        }
-        private void DotNetDownload()
-        {
-            try
-            {
-                string gzip = "dotnet.exe";
-                WebClient webclient = new();
-                webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadDotNetCompletedCallback);
-                webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DotNetDownloadProgressChanged);
-                webclient.DownloadFileAsync(new Uri("https://download.visualstudio.microsoft.com/download/pr/962fa33f-e57c-4e8a-abc9-01882ff74e3d/23e11ee6c3da863fa1489f951aa7e75e/dotnet-sdk-3.1.417-win-x64.exe"), Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + gzip);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error finishing download: {ex}");
-            }
-        }
-        public void DotNetDownloadProgressChanged(Object sender, DownloadProgressChangedEventArgs e)
-        {
-            Status.Text = "Status: Downloading .Net - " + e.ProgressPercentage.ToString() + "%";
-        }
-        private void DownloadDotNetCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            try
-            {
-                string name = "dotnet.exe";
-                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name).WaitForExit();
-                WebClient wc = new();
-                wc.DownloadFile("https://cdn.discordapp.com/attachments/972611854524354570/997363999995867246/rift.ico", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico");
-                SetEnvironmentVariable();
-                Status.Text = "Creating desktop icon for Rift";
                 IShellLink link = (IShellLink)new ShellLink();
-                link.SetDescription("Rift Launcher");
-                link.SetPath(Environment.CurrentDirectory + "\\Rift\\Rift.exe");
-                link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift");
+                link.SetDescription("Old Rift Launcher");
+                link.SetPath(Environment.CurrentDirectory + "\\Rift.Old\\Rift.exe");
+                link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift.Old");
                 link.SetIconLocation(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico", 0);
                 IPersistFile file = (IPersistFile)link;
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
-                MessageBox.Show("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
-                Status.Text = "";
-                InstallButton.Content = "Installed";
-                InstallButton.IsEnabled = false;
+                file.Save(Path.Combine(desktopPath, "Old Rift.lnk"), false);
+                Status.Text = "Old version installed! You can install a different old version but this will overrite the currently installed old version.";
+                InstallButton.IsEnabled = true;
+                InstallButton.Content = "Install";
+                
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Finishing the download failed! Error message: " + ex.Message);
-                this.Close();
+                MessageBox.Show($"Error finishing download: {ex}");
             }
         }
 
-        private void SetEnvironmentVariable()
+        private void ColHomeButton_Click(object sender, RoutedEventArgs e)
         {
-            Status.Text = "Checking if CPU fix is needed";
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENSSL_ia32cap")))
-            {
-                Status.Text = "CPU fix is needed, applying fix";
-                Environment.SetEnvironmentVariable("OPENSSL_ia32cap", "~0x20000000", EnvironmentVariableTarget.Machine);
-                Status.Text = "CPU fix applied";
-            }
-            Status.Text = "CPU fix is not needed, finishing up";
+            MainWindow MW = new();
+            this.Hide();
+            MW.Show();
         }
         [ComImport]
         [Guid("00021401-0000-0000-C000-000000000046")]
