@@ -46,7 +46,7 @@
             </Button.Style>
         </Button>
         <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Rift Installer - Old versions" VerticalAlignment="Top" FontFamily="Segoe UI Variable Display Light" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="53"/>
-        <TextBlock Name="Info" HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="Here, you can download older versions of Rift. Currently, you can install Rift versions from the current version all the way down to Rift 2.2.0.0. Support for older versions will be added later on, but may take a bit due to compatability issues." VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Display Light" Width="564" TextAlignment="Center" Height="109" FontSize="20"/>
+        <TextBlock Name="Info" HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="Here, you can download older versions of Rift. Currently, you can install Rift versions from the current version all the way down to Rift 2.2.0.0. Please note that older versions are not supported and are not recommended to be used due to security concerns." VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Display Light" Width="564" TextAlignment="Center" Height="109" FontSize="20"/>
         <Button Name="InstallButton" Content="Install" HorizontalAlignment="Center" Margin="0,243,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="#FF101010" FontFamily="Candara Light" Click="Install">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
