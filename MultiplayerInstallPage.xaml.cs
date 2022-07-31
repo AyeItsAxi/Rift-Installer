@@ -80,9 +80,14 @@ namespace RiftInstaller
         {
             try
             {
+                string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+                Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
                 string gzip = "Rift.MP.zip";
                 ZipFile.ExtractToDirectory(gzip, @"./Rift.MP");
                 File.Delete(gzip);
+                File.Delete(@"./Rift.MP/Yosemite.dll");
+                WebClient wc = new();
+                wc.DownloadFile(JSD.MPClient, @"./Rift.MP/Yosemite.dll");
                 IShellLink link = (IShellLink)new ShellLink();
                 link.SetDescription("Old Rift Launcher");
                 link.SetPath(Environment.CurrentDirectory + "\\Rift.MP\\Rift.exe");

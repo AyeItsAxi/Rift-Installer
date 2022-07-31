@@ -2,6 +2,7 @@
 {
     public class RICloud
     {
+        public string MPClient { get; set; }
         public string Latest { get; set; }
         public string ttofvb  { get; set; }
         public string ttofv { get; set; }
