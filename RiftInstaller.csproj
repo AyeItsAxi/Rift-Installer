@@ -41,9 +41,9 @@
 	<ItemGroup>
 		<Resource Include="ProjectImg/Home.png" />
 		<Resource Include="ProjectImg/Misc.png" />
-		<Content Include="ProjectImg/MPIco.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		<Resource Include="ProjectImg/MPIco.png">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
 	</ItemGroup>
 
 </Project>
