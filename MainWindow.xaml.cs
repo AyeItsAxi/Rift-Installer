@@ -60,7 +60,7 @@ namespace RiftInstaller
             this.Hide();
         }
 
-        private void MPButton(object sender, RoutedEventArgs e)
+        private void MPButtonClick(object sender, RoutedEventArgs e)
         {
             MultiplayerInstallPage mpage = new();
             mpage.Show();

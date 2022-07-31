@@ -129,5 +129,49 @@
                 </Style>
             </Button.Style>
         </Button>
+        <Button Name="MPButton" HorizontalAlignment="Left" Margin="30,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="MPButtonClick" FontFamily="Segoe UI Variable Text Light" Height="20" Visibility="Visible">
+            <Image Source="/ProjectImg/MPIco.png" Width="20" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="15"/>
+                </Style>
+            </Button.Resources>
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Width="20" Height="20" CornerRadius="2" Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FF8EBA8A"/>
+                    <Setter Property="Cursor" Value="Hand"></Setter>
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="UIElement.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#FF252235" To="#FF1F1F1F"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="UIElement.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#FF1F1F1F" To="#FF252235"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="UIElement.MouseDown">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.05" From="#FF313461" To="#FF545E9A"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>
