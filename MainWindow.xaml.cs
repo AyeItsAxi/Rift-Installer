@@ -60,6 +60,13 @@ namespace RiftInstaller
             this.Hide();
         }
 
+        private void MPButton(object sender, RoutedEventArgs e)
+        {
+            MultiplayerInstallPage mpage = new();
+            mpage.Show();
+            this.Hide();
+        }
+
         private void Install(object sender, RoutedEventArgs e)
         {
             string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
