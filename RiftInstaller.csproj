@@ -35,11 +35,15 @@
 	<ItemGroup>
 		<None Remove="ProjectImg/Home.png" />
 		<None Remove="ProjectImg/Misc.png" />
+		<None Remove="ProjectImg/MPIco.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Resource Include="ProjectImg/Home.png" />
 		<Resource Include="ProjectImg/Misc.png" />
+		<Content Include="ProjectImg/MPIco.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 </Project>

@@ -89,7 +89,7 @@ namespace RiftInstaller
                 WebClient wc = new();
                 wc.DownloadFile(JSD.MPClient, @"./Rift.MP/Yosemite.dll");
                 IShellLink link = (IShellLink)new ShellLink();
-                link.SetDescription("Old Rift Launcher");
+                link.SetDescription("Rift Multiplayer Launcher");
                 link.SetPath(Environment.CurrentDirectory + "\\Rift.MP\\Rift.exe");
                 link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift.MP");
                 link.SetIconLocation(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico", 0);

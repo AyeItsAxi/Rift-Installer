@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RiftInstaller"
         mc:Ignorable="d"
-        Title="Rift Installer" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
+        Title="Rift Installer" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize"
+        UseLayoutRounding="True">
     <Grid Background="#FF14151b">
         <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
         <TextBlock HorizontalAlignment="Left" Margin="5,2,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="White" FontFamily="Corbel Light" FontSize="10" MouseDown="DragBar"/>
@@ -86,7 +87,9 @@
         </Button>
         <TextBlock Name="Status" HorizontalAlignment="Center" Margin="0,272,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="800" TextAlignment="Center" Foreground="#FF656565" FontFamily="Segoe UI Variable Text Light" FontSize="10"/>
         <Button Name="ChangeWindowBTN" HorizontalAlignment="Left" Margin="5,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="ChangeWindow" FontFamily="Segoe UI Variable Text Light" Height="20" Visibility="Visible">
-            <Image Source="/ProjectImg/Misc.png" Width="20" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            <Image Source="/ProjectImg/Misc.png" Width="18" Height="18" VerticalAlignment="Top" HorizontalAlignment="Right"
+                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                   RenderOptions.EdgeMode="Aliased"/>
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="15"/>
@@ -130,7 +133,9 @@
             </Button.Style>
         </Button>
         <Button Name="MPButton" HorizontalAlignment="Left" Margin="30,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="MPButtonClick" FontFamily="Segoe UI Variable Text Light" Height="20" Visibility="Visible">
-            <Image Source="/ProjectImg/MPIco.png" Width="20" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            <Image Source="/ProjectImg/MPIco.png" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                   RenderOptions.EdgeMode="Aliased"/>
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="15"/>
