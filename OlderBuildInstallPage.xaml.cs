@@ -120,7 +120,6 @@ namespace RiftInstaller
                 }
             }
         }
-        public string FolderName;
         public void DownloadManager(string InstallURL)
         {
             try
