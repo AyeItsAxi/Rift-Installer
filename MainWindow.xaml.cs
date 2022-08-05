@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Windows;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using Newtonsoft.Json;
 
 namespace RiftInstaller
 {
@@ -17,6 +18,7 @@ namespace RiftInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string RIAD = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\";
         public MainWindow()
         {
             InitializeComponent();
@@ -26,12 +28,6 @@ namespace RiftInstaller
             {
                 File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             }
-            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/strings.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
-            if (Directory.Exists("Rift"))
-            {
-                InstallButton.IsEnabled = false;
-                InstallButton.Content = "Installed";
-            }
             if (File.Exists("Rift.Old.zip"))
             {
                 File.Delete("Rift.Old.zip");
@@ -39,6 +35,34 @@ namespace RiftInstaller
             if (File.Exists("Rift.zip"))
             {
                 File.Delete("Rift.zip");
+            }
+            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/strings.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
+            if (File.Exists(RIAD + "RiftClientVersion.json"))
+            {
+                string JSData2 = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\RiftClientVersion.json");
+                Services.RICloud JSD2 = JsonConvert.DeserializeObject<Services.RICloud>(JSData2);
+                if (JSD2.ClientVer == JSD.ClientVer)
+                {
+
+                }
+                else if (JSD2.ClientVer != JSD.ClientVer)
+                {
+                    new ToastContentBuilder()
+                        .AddArgument("action", "viewConversation")
+                        .AddArgument("conversationId", 9813)
+                        .AddText("Rift Installer")
+                        .AddText("I detected that your version of Rift is outdated, so I started an update. Your installations and settings save, so there's no need to worry about this.")
+                        .SetToastDuration(ToastDuration.Short)
+                        .Show();
+                    RiftUpdate();
+                }
+            }
+            if (Directory.Exists("Rift"))
+            {
+                InstallButton.IsEnabled = false;
+                InstallButton.Content = "Installed";
             }
         }
 
@@ -100,9 +124,51 @@ namespace RiftInstaller
                 MessageBox.Show($"Error finishing download: {ex}");
             }
         }
+        public void RiftUpdate()
+        {
+            Directory.Delete("./Rift", true);
+            WebClient webclient = new();
+            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/strings.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
+            webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(UpdateRiftCompletedCallback);
+            webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftUpdateProgressChanged);
+            webclient.DownloadFileAsync(new Uri(JSD.Latest), "Rift.zip");
+            InstallButton.Content = "Installing...";
+            InstallButton.IsEnabled = false;
+        }
+        public void RiftUpdateProgressChanged(Object sender, DownloadProgressChangedEventArgs e)
+        {
+            Status.Text = "Status: Updating Rift - " + e.ProgressPercentage.ToString() + "%";
+        }
         public void RiftDownloadProgressChanged(Object sender, DownloadProgressChangedEventArgs e)
         {
             Status.Text = "Status: Installing Rift - " + e.ProgressPercentage.ToString() + "%";
+        }
+        private void UpdateRiftCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            try
+            {
+                string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+                Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
+                string zn = "Rift.zip";
+                ZipFile.ExtractToDirectory(zn, @"./Rift");
+                File.Delete(zn);
+                File.WriteAllText(RIAD + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
+                Status.Text = "";
+                InstallButton.Content = "Installed";
+                InstallButton.IsEnabled = false;
+                new ToastContentBuilder()
+                        .AddArgument("action", "viewConversation")
+                        .AddArgument("conversationId", 9813)
+                        .AddText("Rift Installer")
+                        .AddText("We've finished the update, you can use Rift normally again.")
+                        .Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error finishing download: {ex}");
+            }
         }
         private void DownloadRiftCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
@@ -141,6 +207,8 @@ namespace RiftInstaller
         {
             try
             {
+                string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+                Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
                 string name = "dotnet.exe";
                 Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name).WaitForExit();
                 WebClient wc = new();
@@ -155,6 +223,8 @@ namespace RiftInstaller
                 IPersistFile file = (IPersistFile)link;
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
+                //horrid
+                File.WriteAllText(RIAD + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
                 MessageBox.Show("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
                 Status.Text = "";
                 InstallButton.Content = "Installed";
