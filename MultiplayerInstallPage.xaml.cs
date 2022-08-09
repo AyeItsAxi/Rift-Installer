@@ -42,9 +42,10 @@ namespace RiftInstaller
 
         private void Install(object sender, RoutedEventArgs e)
         {
-            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            Process.Start(@"C:\Program Files\Internet Explorer\iexplore.exe", "http://discord.gg/erafn");
+            /*string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-            DownloadManager(JSD.Latest);
+            DownloadManager(JSD.Latest);*/
         }
         public void DownloadManager(string InstallURL)
         {
