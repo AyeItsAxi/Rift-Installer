@@ -1,11 +1,11 @@
-﻿<Window x:Class="RiftInstaller.OlderBuildInstallPage"
+﻿<Page x:Class="RiftInstaller.OlderBuildInstallPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RiftInstaller"
         mc:Ignorable="d"
-        Title="Rift Installer - Older Versions" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
+        Title="Rift Installer - Older Versions" Height="300" Width="800">
     <Grid Background="#FF14151b">
         <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
         <TextBlock HorizontalAlignment="Left" Margin="5,2,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="White" FontFamily="Corbel Light" FontSize="10" MouseDown="DragBar"/>
@@ -139,4 +139,4 @@
             </Button.Style>
         </Button>
     </Grid>
-</Window>
+</Page>

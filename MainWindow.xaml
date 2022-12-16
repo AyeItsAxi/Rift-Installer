@@ -8,48 +8,9 @@
         Title="Rift Installer" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize"
         UseLayoutRounding="True">
     <Grid Background="#FF14151b">
-        <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
-        <TextBlock HorizontalAlignment="Left" Margin="5,2,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="White" FontFamily="Corbel Light" FontSize="10" MouseDown="DragBar"/>
-        <Button Content="r" HorizontalAlignment="Left" Margin="779,0,0,0" VerticalAlignment="Top" Height="16" Width="21" BorderBrush="#FF1F1F1F" Foreground="White" Background="Black" FontFamily="Marlett" Click="CloseWindow" Opacity="0.6">
-            <Button.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="15"/>
-                </Style>
-            </Button.Resources>
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Width="21" Height="16" CornerRadius="2" Background="{TemplateBinding Background}">
-                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="#FF8EBA8A"/>
-                    <Setter Property="Cursor" Value="Hand"/>
-                    <Style.Triggers>
-                        <EventTrigger RoutedEvent="UIElement.MouseEnter">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#000000" To="#ff0000"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="UIElement.MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#ff0000" To="#000000"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Welcome to the Rift installer!" VerticalAlignment="Top" FontFamily="Segoe UI Variable Display Light" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="53"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="This installer was created by 1 24 9 with help from Ahava to help with the installation of Rift, as people have many issues when downloading. Using this, you can download old versions of Rift, and a modified version of Rift for multiplayer. This installer automatically installs Rift and its requirements." VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Display Light" Width="564" TextAlignment="Center" Height="109" FontSize="18"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,205,0,0" TextWrapping="Wrap" Text="Note: before installing, make sure 'Real Time Protection' is turned off in your antivirus settings." VerticalAlignment="Top" Foreground="#FF525252" FontSize="11" FontFamily="Segoe UI Variable Text Light"/>
-        <Button Name="InstallButton" Content="Install" HorizontalAlignment="Center" Margin="0,243,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="#FF101010" FontFamily="Candara Light" Click="Install">
+        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Welcome to the Rift installer!" VerticalAlignment="Top" FontFamily="lib/fonts/normal/#Rubik" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="53"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="This installer was created by Axi with help from Ahava to help with the installation of Rift, as people may have issues when downloading. Using this, you can download the latest version of Rift, and a modified version of Rift for multiplayer. This installer automatically updates Rift when there's an update" VerticalAlignment="Top" Foreground="White" FontFamily="/lib/fonts/light/#Rotunda Light" Width="564" TextAlignment="Center" Height="147" FontSize="19"/>
+        <Button Name="InstallButton" Content="Install" HorizontalAlignment="Center" Margin="0,243,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="#FF101010" FontFamily="/lib/fonts/light/#Rubik Light" Click="Install">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="15"/>
@@ -86,10 +47,11 @@
             </Button.Style>
         </Button>
         <TextBlock Name="Status" HorizontalAlignment="Center" Margin="0,272,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="800" TextAlignment="Center" Foreground="#FF656565" FontFamily="Segoe UI Variable Text Light" FontSize="10"/>
-        <Button Name="ChangeWindowBTN" HorizontalAlignment="Left" Margin="5,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="ChangeWindow" FontFamily="Segoe UI Variable Text Light" Height="20" Visibility="Visible">
-            <Image Source="/ProjectImg/Misc.png" Width="18" Height="18" VerticalAlignment="Top" HorizontalAlignment="Right"
+        <Button Name="ChangeWindowBTN" HorizontalAlignment="Left" Margin="5,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="ChangeWindow" FontFamily="Segoe UI Variable Text Light" Height="20" IsEnabled="False" Visibility="Visible">
+            <Image Source="/OldBuilds.png" Width="18" Height="18" VerticalAlignment="Top" HorizontalAlignment="Right"
                    RenderOptions.BitmapScalingMode="NearestNeighbor"
-                   RenderOptions.EdgeMode="Aliased"/>
+                   RenderOptions.EdgeMode="Aliased"
+                   Opacity="0.5"/>
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="15"/>
@@ -132,11 +94,11 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Name="MPButton" HorizontalAlignment="Left" Margin="30,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="MPButtonClick" FontFamily="Segoe UI Variable Text Light" Height="20" Visibility="Visible" IsEnabled="False">
-            <Image Source="/ProjectImg/MPIco.png" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center"
+        <Button Name="MPButton" HorizontalAlignment="Left" Margin="30,272,0,0" VerticalAlignment="Top" Width="20" BorderBrush="{x:Null}" Foreground="White" Background="#FF1F1F1F" Click="MPButtonClick" FontFamily="Segoe UI Variable Text Light" Height="20" Visibility="Visible" IsEnabled="True">
+            <Image Source="/Multiplayer.png" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="NearestNeighbor"
                    RenderOptions.EdgeMode="Aliased"
-                   Opacity="0.2"/>
+                   Opacity="1"/>
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="15"/>
@@ -172,6 +134,46 @@
                             <BeginStoryboard>
                                 <Storyboard>
                                     <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.05" From="#FF313461" To="#FF545E9A"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Frame x:Name="pageHost" Content="" NavigationUIVisibility="Hidden" HorizontalAlignment="Center" Height="300" VerticalAlignment="Center" Width="800" Visibility="Hidden"/>
+        <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar" Opacity="0.9"/>
+        <TextBlock HorizontalAlignment="Left" Margin="15,2,0,0" TextWrapping="Wrap" Text="Rift Installer" VerticalAlignment="Top" Foreground="White" FontFamily="lib/fonts/light/#Rubik" FontSize="10" MouseDown="DragBar"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Height="12" VerticalAlignment="Top" Width="13" Margin="1,2,0,0" Source="/ProjectImg/rift.small.png"/>
+        <Button Content="r" HorizontalAlignment="Left" Margin="779,0,0,0" VerticalAlignment="Top" Height="16" Width="21" BorderBrush="#FF1F1F1F" Foreground="White" Background="Black" FontFamily="Marlett" Click="CloseWindow" Opacity="0.6">
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="15"/>
+                </Style>
+            </Button.Resources>
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Width="21" Height="16" CornerRadius="2" Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FF8EBA8A"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="UIElement.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#000000" To="#ff0000"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="UIElement.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="00:00:00.15" From="#ff0000" To="#000000"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>

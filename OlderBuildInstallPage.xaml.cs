@@ -15,7 +15,7 @@ namespace RiftInstaller
     /// <summary>
     /// Interaction logic for OlderBuildInstallPage.xaml
     /// </summary>
-    public partial class OlderBuildInstallPage : Window
+    public partial class OlderBuildInstallPage : System.Windows.Controls.Page
     {
         public OlderBuildInstallPage()
         {
@@ -33,12 +33,11 @@ namespace RiftInstaller
 
         private void DragBar(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            Services.Static.applicationFrame.DragMove();
         }
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            this.Close();
             Application.Current.Shutdown();
         }
 
@@ -178,9 +177,7 @@ namespace RiftInstaller
 
         private void ColHomeButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow MW = new();
-            this.Hide();
-            MW.Show();
+            Services.Static.applicationFrame.pageHost.Visibility = Visibility.Hidden;
         }
         [ComImport]
         [Guid("00021401-0000-0000-C000-000000000046")]

@@ -1,11 +1,11 @@
-﻿<Window x:Class="RiftInstaller.MultiplayerInstallPage"
+﻿<Page x:Class="RiftInstaller.MultiplayerInstallPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RiftInstaller"
         mc:Ignorable="d"
-        Title="Rift Installer - Multiplayer" Height="300" Width="800" WindowStyle="None" ResizeMode="NoResize">
+        Title="Rift Installer - Multiplayer" Height="300" Width="800">
     <Grid Background="#FF14151b">
         <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar"/>
         <TextBlock HorizontalAlignment="Left" Margin="5,2,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="White" FontFamily="Corbel Light" FontSize="10" MouseDown="DragBar"/>
@@ -45,9 +45,9 @@
                 </Style>
             </Button.Style>
         </Button>
-        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Rift Installer - Multiplayer" VerticalAlignment="Top" FontFamily="Segoe UI Variable Display Light" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="69"/>
-        <TextBlock Name="Info" HorizontalAlignment="Center" Margin="0,91,0,0" TextWrapping="Wrap" Text="Here, you can download the multiplayer version of Rift. You CAN NOT host multiplayer through Rift, this is just so you can play whenever Makks hosts Rift multiplayer. Just click install and we will automatically download the latest client dll and get you set up for multiplayer." VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Variable Display Light" Width="564" TextAlignment="Center" Height="109" FontSize="20"/>
-        <Button Name="InstallButton" Content="Install" HorizontalAlignment="Center" Margin="0,232,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="#FF101010" FontFamily="Candara Light" Click="Install">
+        <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Rift Installer - Multiplayer" VerticalAlignment="Top" FontFamily="/lib/fonts/normal/#Rubik" Foreground="White" FontSize="48" Width="800" TextAlignment="Center" Height="69"/>
+        <TextBlock x:Name="Info" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" FontFamily="/lib/fonts/light/#Rubik" Width="564" TextAlignment="Center" Height="128" FontSize="20"><Run Text="In order to download Rift multiplayer, you must first install Rift itself. Please come back once Rift has finished downloading."/><LineBreak/><Run/></TextBlock>
+        <Button Name="InstallButton" Content="Unavailable" HorizontalAlignment="Center" Margin="0,232,0,0" VerticalAlignment="Top" Height="24" Width="116" BorderBrush="#FF1F1F1F" Foreground="#FF9A9A9A" Background="#FF101010" FontFamily="/lib/fonts/light/#Rubik" Click="Install" IsEnabled="False">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="15"/>
@@ -129,4 +129,4 @@
             </Button.Style>
         </Button>
     </Grid>
-</Window>
+</Page>

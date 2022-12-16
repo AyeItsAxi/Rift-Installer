@@ -27,23 +27,43 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="7-Zip.x64" Version="16.2.1" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
   </ItemGroup>
 
 	<ItemGroup>
+		<None Remove="lib\fonts\light\Nunito-ExtraLight.ttf" />
+		<None Remove="lib\fonts\light\Rotunda-Light.ttf" />
+		<None Remove="lib\fonts\light\Rubik-Light.ttf" />
+		<None Remove="lib\fonts\normal\Nunito-ExtraBold.ttf" />
+		<None Remove="lib\fonts\normal\Rotunda-Bold.ttf" />
+		<None Remove="lib\fonts\normal\Rubik-Medium.ttf" />
+		<None Remove="Multiplayer.png" />
+		<None Remove="OldBuilds.png" />
 		<None Remove="ProjectImg/Home.png" />
 		<None Remove="ProjectImg/Misc.png" />
 		<None Remove="ProjectImg/MPIco.png" />
+		<None Remove="ProjectImg\rift.small.png" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="lib\fonts\light\Nunito-ExtraLight.ttf" />
+		<Resource Include="lib\fonts\light\Rotunda-Light.ttf" />
+		<Resource Include="lib\fonts\light\Rubik-Light.ttf" />
+		<Resource Include="lib\fonts\normal\Nunito-ExtraBold.ttf" />
+		<Resource Include="lib\fonts\normal\Rotunda-Bold.ttf" />
+		<Resource Include="lib\fonts\normal\Rubik-Medium.ttf" />
+		<Resource Include="Multiplayer.png" />
+		<Resource Include="OldBuilds.png" />
 		<Resource Include="ProjectImg/Home.png" />
 		<Resource Include="ProjectImg/Misc.png" />
 		<Resource Include="ProjectImg/MPIco.png">
 		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="ProjectImg\rift.small.png" />
 	</ItemGroup>
 
 </Project>

@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System.Runtime.InteropServices.ComTypes;
+using RiftInstaller.Services;
 
 namespace RiftInstaller
 {
@@ -18,12 +19,16 @@ namespace RiftInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public string RIAD = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\";
+        public MultiplayerInstallPage mpInstallPage;
+        public OlderBuildInstallPage obInstallPage;
         public MainWindow()
         {
             InitializeComponent();
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\");
             WebClient webclient = new();
+            Services.CobaltManage.CreateModifiableCobaltConfiguration();
             if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json"))
             {
                 File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
@@ -36,7 +41,18 @@ namespace RiftInstaller
             {
                 File.Delete("Rift.zip");
             }
-            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/strings.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            if (File.Exists("Rift.MP.zip"))
+            {
+                File.Delete("Rift.MP.zip");
+            }
+            if (File.Exists("Fortnite.zip"))
+            {
+                File.Delete("Fortnite.zip");
+            }
+            mpInstallPage = new MultiplayerInstallPage();
+            obInstallPage = new OlderBuildInstallPage();
+            Services.Static.applicationFrame = this;
+            webclient.DownloadFile(Services.Static.GalliumSilicon, Services.Static.XenonSilicon);
             string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
             if (File.Exists(RIAD + "RiftClientVersion.json"))
@@ -45,7 +61,7 @@ namespace RiftInstaller
                 Services.RICloud JSD2 = JsonConvert.DeserializeObject<Services.RICloud>(JSData2);
                 if (JSD2.ClientVer == JSD.ClientVer)
                 {
-
+                    XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
                 }
                 else if (JSD2.ClientVer != JSD.ClientVer)
                 {
@@ -57,44 +73,45 @@ namespace RiftInstaller
                         .SetToastDuration(ToastDuration.Short)
                         .Show();
                     RiftUpdate();
+                    XenonEnums.xenonStatus = XenonEnums.XenonStatus.Installing;
                 }
             }
             if (Directory.Exists("Rift"))
             {
                 InstallButton.IsEnabled = false;
                 InstallButton.Content = "Installed";
+                XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
             }
         }
 
         private void DragBar(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            DragMove();
         }
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            this.Close();
-            Application.Current.Shutdown();
+            Application.Current.Shutdown(0xE);
         }
 
         private void ChangeWindow(object sender, RoutedEventArgs e)
         {
-            OlderBuildInstallPage ipage = new();
-            ipage.Show();
-            this.Hide();
+            //Disabled as API for old versions of Rift launchers is gone.
+
+            //pageHost.Visibility = Visibility.Visible;
+            //pageHost.Content = obInstallPage;
         }
 
         private void MPButtonClick(object sender, RoutedEventArgs e)
         {
-            MultiplayerInstallPage mpage = new();
-            mpage.Show();
-            this.Hide();
+            pageHost.Visibility = Visibility.Visible;
+            pageHost.Content = mpInstallPage;
         }
 
         private void Install(object sender, RoutedEventArgs e)
         {
             string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
-            Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
+            RICloud JSD = JsonConvert.DeserializeObject<RICloud>(JSData);
             DownloadManager(JSD.Latest);
         }
 
@@ -128,7 +145,7 @@ namespace RiftInstaller
         {
             Directory.Delete("./Rift", true);
             WebClient webclient = new();
-            webclient.DownloadFile("https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/strings.json", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            webclient.DownloadFile(Services.Static.GalliumSilicon, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
             webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(UpdateRiftCompletedCallback);
