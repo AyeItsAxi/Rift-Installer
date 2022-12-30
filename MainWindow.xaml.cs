@@ -29,9 +29,9 @@ namespace RiftInstaller
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\");
             WebClient webclient = new();
             Services.CobaltManage.CreateModifiableCobaltConfiguration();
-            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json"))
+            if (File.Exists(Static.XenonSilicon))
             {
-                File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+                File.Delete(Static.XenonSilicon);
             }
             if (File.Exists("Rift.Old.zip"))
             {
@@ -53,7 +53,7 @@ namespace RiftInstaller
             obInstallPage = new OlderBuildInstallPage();
             Services.Static.applicationFrame = this;
             webclient.DownloadFile(Services.Static.GalliumSilicon, Services.Static.XenonSilicon);
-            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            string JSData = File.ReadAllText(Static.XenonSilicon);
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
             if (File.Exists(RIAD + "RiftClientVersion.json"))
             {
@@ -110,7 +110,7 @@ namespace RiftInstaller
 
         private void Install(object sender, RoutedEventArgs e)
         {
-            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            string JSData = File.ReadAllText(Static.XenonSilicon);
             RICloud JSD = JsonConvert.DeserializeObject<RICloud>(JSData);
             DownloadManager(JSD.Latest);
         }
@@ -145,8 +145,8 @@ namespace RiftInstaller
         {
             Directory.Delete("./Rift", true);
             WebClient webclient = new();
-            webclient.DownloadFile(Services.Static.GalliumSilicon, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
-            string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+            webclient.DownloadFile(Services.Static.GalliumSilicon, Static.XenonSilicon);
+            string JSData = File.ReadAllText(Static.XenonSilicon);
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
             webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(UpdateRiftCompletedCallback);
             webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftUpdateProgressChanged);
@@ -166,7 +166,7 @@ namespace RiftInstaller
         {
             try
             {
-                string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+                string JSData = File.ReadAllText(Static.XenonSilicon);
                 Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
                 string zn = "Rift.zip";
                 ZipFile.ExtractToDirectory(zn, @"./Rift");
@@ -224,7 +224,7 @@ namespace RiftInstaller
         {
             try
             {
-                string JSData = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\strings.json");
+                string JSData = File.ReadAllText(Static.XenonSilicon);
                 Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
                 string name = "dotnet.exe";
                 Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name).WaitForExit();
@@ -236,7 +236,7 @@ namespace RiftInstaller
                 link.SetDescription("Rift Launcher");
                 link.SetPath(Environment.CurrentDirectory + "\\Rift\\Rift.exe");
                 link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift");
-                link.SetIconLocation(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico", 0);
+                link.SetIconLocation(Static.XenonLithium + "Rift.ico", 0);
                 IPersistFile file = (IPersistFile)link;
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
@@ -294,6 +294,32 @@ namespace RiftInstaller
             void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, int dwReserved);
             void Resolve(IntPtr hwnd, int fFlags);
             void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
+        }
+
+        private void MPButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Arrow.Margin = new Thickness(39, 256, 0, 0);
+            mpDisabledNoticeL1.Content = "MP is disabled until";
+            mpDisabledNoticeL2.Content = "January 6th.";
+            AnimationHandler.FadeIn(NotifyHost, 0.4);
+        }
+
+        private void MPButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            AnimationHandler.FadeOut(NotifyHost, 0.4);
+        }
+
+        private void ChangeWindowBTN_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Arrow.Margin = new Thickness(14, 256, 0, 0);
+            mpDisabledNoticeL1.Content = "Older build installs";
+            mpDisabledNoticeL2.Content = "disabled for safety.";
+            AnimationHandler.FadeIn(NotifyHost, 0.4);
+        }
+
+        private void ChangeWindowBTN_MouseLeave(object sender, MouseEventArgs e)
+        {
+            AnimationHandler.FadeOut(NotifyHost, 0.4);
         }
     }
 }
