@@ -91,7 +91,22 @@ namespace RiftInstaller
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown(0xE);
+            switch (XenonEnums.xenonStatus)
+            {
+                case XenonEnums.XenonStatus.Installing:
+                    MessageBoxResult msb = MessageBox.Show("A download is in progress, and exiting will corrupt it. Are you sure?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (msb == MessageBoxResult.Yes)
+                    {
+                        Application.Current.Shutdown(0xE);
+                    }
+                    break;
+                case XenonEnums.XenonStatus.Initializing:
+                    break;
+                default:
+                    File.Delete(Static.XenonSilicon);
+                    Application.Current.Shutdown(0xE);
+                    break;
+            }
         }
 
         private void ChangeWindow(object sender, RoutedEventArgs e)
@@ -143,6 +158,7 @@ namespace RiftInstaller
         }
         public void RiftUpdate()
         {
+            XenonEnums.xenonStatus = XenonEnums.XenonStatus.Installing;
             Directory.Delete("./Rift", true);
             WebClient webclient = new();
             webclient.DownloadFile(Services.Static.GalliumSilicon, Static.XenonSilicon);
@@ -181,6 +197,7 @@ namespace RiftInstaller
                         .AddText("Rift Installer")
                         .AddText("We've finished the update, you can use Rift normally again.")
                         .Show();
+                XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
             }
             catch (Exception ex)
             {

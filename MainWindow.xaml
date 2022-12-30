@@ -145,7 +145,7 @@
         </Button>
         <Frame x:Name="pageHost" Content="" NavigationUIVisibility="Hidden" HorizontalAlignment="Center" Height="300" VerticalAlignment="Center" Width="800" Visibility="Hidden"/>
         <Border BorderBrush="#FF060608" BorderThickness="100" HorizontalAlignment="Center" Height="16" VerticalAlignment="Top" Width="800" MouseDown="DragBar" Opacity="0.9"/>
-        <TextBlock HorizontalAlignment="Left" Margin="15,2,0,0" TextWrapping="Wrap" Text="Rift Installer" VerticalAlignment="Top" Foreground="White" FontFamily="lib/fonts/light/#Rubik" FontSize="10" MouseDown="DragBar"/>
+        <TextBlock HorizontalAlignment="Left" Margin="15,1,0,0" TextWrapping="Wrap" Text="Rift Installer" VerticalAlignment="Top" Foreground="#FFA0A0A0" FontFamily="lib/fonts/light/#Rotunda" FontSize="10" MouseDown="DragBar"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="12" VerticalAlignment="Top" Width="12" Margin="1,2,0,0" Source="/ProjectImg/rift.small.png"/>
         <Button Content="r" HorizontalAlignment="Left" Margin="779,0,0,0" VerticalAlignment="Top" Height="16" Width="21" BorderBrush="#FF1F1F1F" Foreground="White" Background="Black" FontFamily="Marlett" Click="CloseWindow" Opacity="0.6">
             <Button.Resources>
@@ -184,7 +184,7 @@
             </Button.Style>
         </Button>
         <!--MP Button: 39,256,0,0-->
-        <!--OB Button: 14,256,0,0-->
+        <!--OB Button:  -->
         <Grid Margin="0, 0, 0, 0" Name="NotifyHost" Opacity="0">
             <Border Name="Arrow" BorderBrush="#FF0E0E0E" BorderThickness="6" HorizontalAlignment="Left" Height="11" Margin="39,256,0,0" VerticalAlignment="Top" Width="11" RenderTransformOrigin="0.5,0.5">
                 <Border.RenderTransform>
