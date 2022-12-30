@@ -41,11 +41,9 @@
 		<None Remove="lib\fonts\normal\Nunito-ExtraBold.ttf" />
 		<None Remove="lib\fonts\normal\Rotunda-Bold.ttf" />
 		<None Remove="lib\fonts\normal\Rubik-Medium.ttf" />
-		<None Remove="Multiplayer.png" />
 		<None Remove="OldBuilds.png" />
 		<None Remove="ProjectImg/Home.png" />
 		<None Remove="ProjectImg/Misc.png" />
-		<None Remove="ProjectImg/MPIco.png" />
 		<None Remove="ProjectImg\rift.small.png" />
 	</ItemGroup>
 
@@ -56,11 +54,9 @@
 		<Resource Include="lib\fonts\normal\Nunito-ExtraBold.ttf" />
 		<Resource Include="lib\fonts\normal\Rotunda-Bold.ttf" />
 		<Resource Include="lib\fonts\normal\Rubik-Medium.ttf" />
-		<Resource Include="Multiplayer.png" />
 		<Resource Include="OldBuilds.png" />
 		<Resource Include="ProjectImg/Home.png" />
 		<Resource Include="ProjectImg/Misc.png" />
-		<Resource Include="ProjectImg/MPIco.png">
 		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="ProjectImg\rift.small.png" />
