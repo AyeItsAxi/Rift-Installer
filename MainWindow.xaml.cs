@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -127,7 +127,7 @@ namespace RiftInstaller
         {
             string JSData = File.ReadAllText(Static.XenonSilicon);
             RICloud JSD = JsonConvert.DeserializeObject<RICloud>(JSData);
-            new Uri("https://cdn.discordapp.com/attachments/1064043825955344506/1064046362104184902/RiftBetaLauncher.zip");
+            DownloadManager(new Uri("https://cdn.discordapp.com/attachments/1064043825955344506/1064046362104184902/RiftBetaLauncher.zip"));
         }
 
         public void DownloadManager(string InstallURL)
