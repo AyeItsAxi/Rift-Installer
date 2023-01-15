@@ -185,7 +185,11 @@ namespace RiftInstaller
                 string zn = "Rift.zip";
                 ZipFile.ExtractToDirectory(zn, @"./Rift");
                 File.Delete(zn);
-                File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
+                RICloud ClientVersionSerialize = new RICloud
+                {
+                    ClientVer = JSD.ClientVer
+                };
+                File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", JsonConvert.SerializeObject(ClientVersionSerialize));
                 Status.Text = "";
                 InstallButton.Content = "Installed";
                 InstallButton.IsEnabled = false;
