@@ -19,8 +19,6 @@ namespace RiftInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-        public string RIAD = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\";
         public MultiplayerInstallPage mpInstallPage;
         public OlderBuildInstallPage obInstallPage;
         public MainWindow()
@@ -55,7 +53,7 @@ namespace RiftInstaller
             webclient.DownloadFile(Services.Static.GalliumSilicon, Services.Static.XenonSilicon);
             string JSData = File.ReadAllText(Static.XenonSilicon);
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-            if (File.Exists(RIAD + "RiftClientVersion.json"))
+            if (File.Exists(Static.XenonBase + "RiftClientVersion.json"))
             {
                 string JSData2 = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\RiftClientVersion.json");
                 Services.RICloud JSD2 = JsonConvert.DeserializeObject<Services.RICloud>(JSData2);
@@ -187,7 +185,7 @@ namespace RiftInstaller
                 string zn = "Rift.zip";
                 ZipFile.ExtractToDirectory(zn, @"./Rift");
                 File.Delete(zn);
-                File.WriteAllText(RIAD + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
+                File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
                 Status.Text = "";
                 InstallButton.Content = "Installed";
                 InstallButton.IsEnabled = false;
@@ -251,14 +249,14 @@ namespace RiftInstaller
                 Status.Text = "Creating desktop icon for Rift";
                 IShellLink link = (IShellLink)new ShellLink();
                 link.SetDescription("Rift Launcher");
-                link.SetPath(Environment.CurrentDirectory + "\\Rift\\Rift.exe");
+                link.SetPath(Environment.CurrentDirectory + "\\Rift\\FortniteLauncher.exe");
                 link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift");
                 link.SetIconLocation(Static.XenonLithium + "Rift.ico", 0);
                 IPersistFile file = (IPersistFile)link;
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
                 //horrid
-                File.WriteAllText(RIAD + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
+                File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
                 MessageBox.Show("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
                 Status.Text = "";
                 InstallButton.Content = "Installed";
@@ -316,8 +314,8 @@ namespace RiftInstaller
         private void MPButton_MouseEnter(object sender, MouseEventArgs e)
         {
             Arrow.Margin = new Thickness(39, 256, 0, 0);
-            mpDisabledNoticeL1.Content = "MP is disabled until";
-            mpDisabledNoticeL2.Content = "January 6th.";
+            mpDisabledNoticeL1.Content = "MP is built into";
+            mpDisabledNoticeL2.Content = "the new launcher.";
             AnimationHandler.FadeIn(NotifyHost, 0.4);
         }
 
