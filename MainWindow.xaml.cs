@@ -127,7 +127,7 @@ namespace RiftInstaller
         {
             string JSData = File.ReadAllText(Static.XenonSilicon);
             RICloud JSD = JsonConvert.DeserializeObject<RICloud>(JSData);
-            DownloadManager(JSD.Latest);
+            new Uri("https://cdn.discordapp.com/attachments/1064043825955344506/1064046362104184902/RiftBetaLauncher.zip");
         }
 
         public void DownloadManager(string InstallURL)
@@ -166,7 +166,7 @@ namespace RiftInstaller
             Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
             webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(UpdateRiftCompletedCallback);
             webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftUpdateProgressChanged);
-            webclient.DownloadFileAsync(new Uri(JSD.Latest), "Rift.zip");
+            webclient.DownloadFileAsync("https://cdn.discordapp.com/attachments/1064043825955344506/1064046362104184902/RiftBetaLauncher.zip")
             InstallButton.Content = "Installing...";
             InstallButton.IsEnabled = false;
         }
@@ -251,7 +251,7 @@ namespace RiftInstaller
                 Status.Text = "Creating desktop icon for Rift";
                 IShellLink link = (IShellLink)new ShellLink();
                 link.SetDescription("Rift Launcher");
-                link.SetPath(Environment.CurrentDirectory + "\\Rift\\Rift.exe");
+                link.SetPath(Environment.CurrentDirectory + "\\Rift\\FortniteLauncher.exe");
                 link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift");
                 link.SetIconLocation(Static.XenonLithium + "Rift.ico", 0);
                 IPersistFile file = (IPersistFile)link;
