@@ -125,6 +125,13 @@ namespace RiftInstaller
         {
             string JSData = File.ReadAllText(Static.XenonSilicon);
             RICloud JSD = JsonConvert.DeserializeObject<RICloud>(JSData);
+            new ToastContentBuilder()
+                .AddArgument("action", "viewConversation")
+                .AddArgument("conversationId", 9813)
+                .AddText("Rift Installer")
+                .AddText($"Installing from: {JSD.Latest}")
+                .SetToastDuration(ToastDuration.Short)
+                .Show();
             DownloadManager(JSD.Latest);
         }
 
@@ -238,7 +245,13 @@ namespace RiftInstaller
                 file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
                 //horrid
                 File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
-                MessageBox.Show("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
+                new ToastContentBuilder()
+                    .AddArgument("action", "viewConversation")
+                    .AddArgument("conversationId", 9813)
+                    .AddText("Rift Installer")
+                    .AddText("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!")
+                    .SetToastDuration(ToastDuration.Long)
+                    .Show();
                 Status.Text = "";
                 InstallButton.Content = "Installed";
                 InstallButton.IsEnabled = false;
