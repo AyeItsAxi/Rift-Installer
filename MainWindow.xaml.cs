@@ -213,49 +213,26 @@ namespace RiftInstaller
                 string gzip = "Rift.zip";
                 ZipFile.ExtractToDirectory(gzip, @"./Rift");
                 File.Delete(gzip);
-                DotNetDownload();
+                FinalizeRiftInstall();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error finishing download: {ex}");
             }
         }
-        private void DotNetDownload()
-        {
-            try
-            {
-                string gzip = "dotnet.exe";
-                WebClient webclient = new();
-                webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadDotNetCompletedCallback);
-                webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DotNetDownloadProgressChanged);
-                webclient.DownloadFileAsync(new Uri("https://download.visualstudio.microsoft.com/download/pr/962fa33f-e57c-4e8a-abc9-01882ff74e3d/23e11ee6c3da863fa1489f951aa7e75e/dotnet-sdk-3.1.417-win-x64.exe"), Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + gzip);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error finishing download: {ex}");
-            }
-        }
-        public void DotNetDownloadProgressChanged(Object sender, DownloadProgressChangedEventArgs e)
-        {
-            Status.Text = "Status: Downloading .Net - " + e.ProgressPercentage.ToString() + "%";
-        }
-        private void DownloadDotNetCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private void FinalizeRiftInstall()
         {
             try
             {
                 string JSData = File.ReadAllText(Static.XenonSilicon);
                 Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-                string name = "dotnet.exe";
-                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\" + name).WaitForExit();
-                WebClient wc = new();
-                wc.DownloadFile("https://cdn.discordapp.com/attachments/972611854524354570/997363999995867246/rift.ico", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\Rift.ico");
                 SetEnvironmentVariable();
                 Status.Text = "Creating desktop icon for Rift";
                 IShellLink link = (IShellLink)new ShellLink();
                 link.SetDescription("Rift Launcher");
-                link.SetPath(Environment.CurrentDirectory + "\\Rift\\FortniteLauncher.exe");
+                link.SetPath(Environment.CurrentDirectory + "\\Rift\\Rift.exe");
                 link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift");
-                link.SetIconLocation(Static.XenonLithium + "Rift.ico", 0);
+                link.SetIconLocation(System.Reflection.Assembly.GetExecutingAssembly().Location, 0);
                 IPersistFile file = (IPersistFile)link;
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);

@@ -13,7 +13,7 @@ namespace RiftInstaller.Services
         //Silicon = Strings
         //Lithium = Data
         public static MainWindow applicationFrame;
-        public const string GalliumBase = "https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/main/";
+        public const string GalliumBase = "https://raw.githubusercontent.com/AyeItsAxi/rift-installer-strings/refs/heads/main/";
         public const string GalliumSilicon = GalliumBase + "strings.json";
         public static string XenonBase = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\";
         public static string XenonSilicon = XenonBase + "strings.json";
