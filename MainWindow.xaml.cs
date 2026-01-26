@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Windows;
 using Newtonsoft.Json;
@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System.Runtime.InteropServices.ComTypes;
 using RiftInstaller.Services;
+using System.Threading.Tasks;
 
 namespace RiftInstaller
 {
@@ -19,67 +20,120 @@ namespace RiftInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string RIFT_FOLDER = "Rift";
+        private const string RIFT_ZIP = "Rift.zip";
+        private const string RIFT_EXE = "Rift.exe";
+        private const string RIFT_VERSION_FILE = "RiftClientVersion.json";
+        private const int TOAST_CONVERSATION_ID = 9813;
+
+        private static readonly string DataPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Rift Installer", "Data");
+
+        private static readonly string BasePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Rift Installer");
+
+        private static readonly HttpClient httpClient = new HttpClient();
+
         public MultiplayerInstallPage mpInstallPage;
         public OlderBuildInstallPage obInstallPage;
+
         public MainWindow()
         {
             InitializeComponent();
-            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\Data\\");
-            WebClient webclient = new();
-            Services.CobaltManage.CreateModifiableCobaltConfiguration();
-            if (File.Exists(Static.XenonSilicon))
+            _ = InitializeApplicationAsync();
+        }
+
+        private async Task InitializeApplicationAsync()
+        {
+            try
             {
-                File.Delete(Static.XenonSilicon);
+                Directory.CreateDirectory(DataPath);
+                Services.CobaltManage.CreateModifiableCobaltConfiguration();
+
+                CleanupTempFiles();
+
+                mpInstallPage = new MultiplayerInstallPage();
+                obInstallPage = new OlderBuildInstallPage();
+                Services.Static.applicationFrame = this;
+
+                await DownloadAndCheckVersionAsync();
+
+                if (Directory.Exists(RIFT_FOLDER))
+                {
+                    SetInstallButtonState(false, "Installed");
+                    XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
+                }
             }
-            if (File.Exists("Rift.Old.zip"))
+            catch (Exception ex)
             {
-                File.Delete("Rift.Old.zip");
+                MessageBox.Show($"Initialization error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            if (File.Exists("Rift.zip"))
+        }
+
+        private void CleanupTempFiles()
+        {
+            var tempFiles = new[] { Static.XenonSilicon, "Rift.Old.zip", RIFT_ZIP, "Rift.MP.zip", "Fortnite.zip" };
+            foreach (var file in tempFiles)
             {
-                File.Delete("Rift.zip");
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
             }
-            if (File.Exists("Rift.MP.zip"))
+        }
+
+        private async Task DownloadAndCheckVersionAsync()
+        {
+            var versionData = await DownloadStringAsync(Services.Static.GalliumSilicon);
+            await File.WriteAllTextAsync(Static.XenonSilicon, versionData);
+
+            var cloudData = JsonConvert.DeserializeObject<Services.RICloud>(versionData);
+            var versionFile = Path.Combine(BasePath, RIFT_VERSION_FILE);
+
+            if (File.Exists(versionFile))
             {
-                File.Delete("Rift.MP.zip");
-            }
-            if (File.Exists("Fortnite.zip"))
-            {
-                File.Delete("Fortnite.zip");
-            }
-            mpInstallPage = new MultiplayerInstallPage();
-            obInstallPage = new OlderBuildInstallPage();
-            Services.Static.applicationFrame = this;
-            webclient.DownloadFile(Services.Static.GalliumSilicon, Services.Static.XenonSilicon);
-            string JSData = File.ReadAllText(Static.XenonSilicon);
-            Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-            if (File.Exists(Static.XenonBase + "RiftClientVersion.json"))
-            {
-                string JSData2 = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Rift Installer\\RiftClientVersion.json");
-                Services.RICloud JSD2 = JsonConvert.DeserializeObject<Services.RICloud>(JSData2);
-                if (JSD2.ClientVer == JSD.ClientVer)
+                var localVersionData = await File.ReadAllTextAsync(versionFile);
+                var localCloudData = JsonConvert.DeserializeObject<Services.RICloud>(localVersionData);
+
+                if (localCloudData?.ClientVer != cloudData?.ClientVer)
+                {
+                    ShowToast("Rift Installer",
+                        "I detected that your version of Rift is outdated, so I started an update. Your installations and settings save, so there's no need to worry about this.",
+                        ToastDuration.Short);
+                    await RiftUpdateAsync();
+                    XenonEnums.xenonStatus = XenonEnums.XenonStatus.Installing;
+                }
+                else
                 {
                     XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
                 }
-                else if (JSD2.ClientVer != JSD.ClientVer)
-                {
-                    new ToastContentBuilder()
-                        .AddArgument("action", "viewConversation")
-                        .AddArgument("conversationId", 9813)
-                        .AddText("Rift Installer")
-                        .AddText("I detected that your version of Rift is outdated, so I started an update. Your installations and settings save, so there's no need to worry about this.")
-                        .SetToastDuration(ToastDuration.Short)
-                        .Show();
-                    RiftUpdate();
-                    XenonEnums.xenonStatus = XenonEnums.XenonStatus.Installing;
-                }
             }
-            if (Directory.Exists("Rift"))
-            {
-                InstallButton.IsEnabled = false;
-                InstallButton.Content = "Installed";
-                XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
-            }
+        }
+
+        private async Task<string> DownloadStringAsync(string url)
+        {
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private void ShowToast(string title, string message, ToastDuration duration = ToastDuration.Short)
+        {
+            new ToastContentBuilder()
+                .AddArgument("action", "viewConversation")
+                .AddArgument("conversationId", TOAST_CONVERSATION_ID)
+                .AddText(title)
+                .AddText(message)
+                .SetToastDuration(duration)
+                .Show();
+        }
+
+        private void SetInstallButtonState(bool enabled, string content)
+        {
+            InstallButton.IsEnabled = enabled;
+            InstallButton.Content = content;
         }
 
         private void DragBar(object sender, MouseButtonEventArgs e)
@@ -92,27 +146,37 @@ namespace RiftInstaller
             switch (XenonEnums.xenonStatus)
             {
                 case XenonEnums.XenonStatus.Installing:
-                    MessageBoxResult msb = MessageBox.Show("A download is in progress, and exiting will corrupt it. Are you sure?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (msb == MessageBoxResult.Yes)
+                    var result = MessageBox.Show(
+                        "A download is in progress, and exiting will corrupt it. Are you sure?",
+                        "Warning",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.Yes)
                     {
+                        Cleanup();
                         Application.Current.Shutdown(0xE);
                     }
                     break;
                 case XenonEnums.XenonStatus.Initializing:
                     break;
                 default:
-                    File.Delete(Static.XenonSilicon);
+                    Cleanup();
                     Application.Current.Shutdown(0xE);
                     break;
             }
         }
 
+        private void Cleanup()
+        {
+            if (File.Exists(Static.XenonSilicon))
+            {
+                File.Delete(Static.XenonSilicon);
+            }
+        }
+
         private void ChangeWindow(object sender, RoutedEventArgs e)
         {
-            //Disabled as API for old versions of Rift launchers is gone.
-
-            //pageHost.Visibility = Visibility.Visible;
-            //pageHost.Content = obInstallPage;
+            // disabled caus i forgot idk bro its been 4 years since i worked on this project
         }
 
         private void MPButtonClick(object sender, RoutedEventArgs e)
@@ -121,21 +185,45 @@ namespace RiftInstaller
             pageHost.Content = mpInstallPage;
         }
 
-        private void Install(object sender, RoutedEventArgs e)
+        private async void Install(object sender, RoutedEventArgs e)
         {
-            string JSData = File.ReadAllText(Static.XenonSilicon);
-            RICloud JSD = JsonConvert.DeserializeObject<RICloud>(JSData);
-            new ToastContentBuilder()
-                .AddArgument("action", "viewConversation")
-                .AddArgument("conversationId", 9813)
-                .AddText("Rift Installer")
-                .AddText($"Installing from: {JSD.Latest}")
-                .SetToastDuration(ToastDuration.Short)
-                .Show();
-            DownloadManager(JSD.Latest);
+            try
+            {
+                var versionData = await File.ReadAllTextAsync(Static.XenonSilicon);
+                var cloudData = JsonConvert.DeserializeObject<RICloud>(versionData);
+
+                ShowToast("Rift Installer", $"Starting installation from: {cloudData.Latest}");
+                await DownloadManagerAsync(cloudData.Latest);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Installation error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        public void DownloadManager(string InstallURL)
+        public async Task DownloadManagerAsync(string installURL)
+        {
+            try
+            {
+                await AddWindowsDefenderExclusionAsync();
+
+                SetInstallButtonState(false, "Installing...");
+
+                using (var webClient = new System.Net.WebClient())
+                {
+                    webClient.DownloadFileCompleted += DownloadRiftCompletedCallback;
+                    webClient.DownloadProgressChanged += RiftDownloadProgressChanged;
+                    await webClient.DownloadFileTaskAsync(new Uri(installURL), RIFT_ZIP);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Download error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                SetInstallButtonState(true, "Install");
+            }
+        }
+
+        private async Task AddWindowsDefenderExclusionAsync()
         {
             try
             {
@@ -144,141 +232,185 @@ namespace RiftInstaller
                     FileName = "powershell.exe",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    Arguments = "-Command Add-MpPreference -ExclusionPath '" + Environment.CurrentDirectory + "'",
+                    Arguments = $"-Command Add-MpPreference -ExclusionPath '{Environment.CurrentDirectory}'",
                     CreateNoWindow = true,
                 };
-                Process.Start(start);
-                string gzip = "Rift.zip";
-                WebClient webclient = new();
-                webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadRiftCompletedCallback);
-                webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftDownloadProgressChanged);
-                webclient.DownloadFileAsync(new Uri(InstallURL), gzip);
-                InstallButton.Content = "Installing...";
-                InstallButton.IsEnabled = false;
+
+                await Task.Run(() =>
+                {
+                    using (var process = Process.Start(start))
+                    {
+                        process?.WaitForExit();
+                    }
+                });
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Error finishing download: {ex}");
+                // couldnt add the exclusion ??
             }
         }
-        public void RiftUpdate()
-        {
-            XenonEnums.xenonStatus = XenonEnums.XenonStatus.Installing;
-            Directory.Delete("./Rift", true);
-            WebClient webclient = new();
-            webclient.DownloadFile(Services.Static.GalliumSilicon, Static.XenonSilicon);
-            string JSData = File.ReadAllText(Static.XenonSilicon);
-            Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-            webclient.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(UpdateRiftCompletedCallback);
-            webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(RiftUpdateProgressChanged);
-            webclient.DownloadFileAsync(new Uri(JSD.Latest), "Rift.zip");
-            InstallButton.Content = "Installing...";
-            InstallButton.IsEnabled = false;
-        }
-        public void RiftUpdateProgressChanged(Object sender, DownloadProgressChangedEventArgs e)
-        {
-            Status.Text = "Status: Updating Rift - " + e.ProgressPercentage.ToString() + "%";
-        }
-        public void RiftDownloadProgressChanged(Object sender, DownloadProgressChangedEventArgs e)
-        {
-            Status.Text = "Status: Installing Rift - " + e.ProgressPercentage.ToString() + "%";
-        }
-        private void UpdateRiftCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+
+        public async Task RiftUpdateAsync()
         {
             try
             {
-                string JSData = File.ReadAllText(Static.XenonSilicon);
-                Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
-                string zn = "Rift.zip";
-                ZipFile.ExtractToDirectory(zn, @"./Rift");
-                File.Delete(zn);
-                RICloud ClientVersionSerialize = new RICloud
+                XenonEnums.xenonStatus = XenonEnums.XenonStatus.Installing;
+
+                if (Directory.Exists(RIFT_FOLDER))
                 {
-                    ClientVer = JSD.ClientVer
-                };
-                File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", JsonConvert.SerializeObject(ClientVersionSerialize));
-                Status.Text = "";
-                InstallButton.Content = "Installed";
-                InstallButton.IsEnabled = false;
-                new ToastContentBuilder()
-                        .AddArgument("action", "viewConversation")
-                        .AddArgument("conversationId", 9813)
-                        .AddText("Rift Installer")
-                        .AddText("We've finished the update, you can use Rift normally again.")
-                        .Show();
+                    Directory.Delete(RIFT_FOLDER, true);
+                }
+
+                var versionData = await DownloadStringAsync(Services.Static.GalliumSilicon);
+                await File.WriteAllTextAsync(Static.XenonSilicon, versionData);
+                var cloudData = JsonConvert.DeserializeObject<Services.RICloud>(versionData);
+
+                SetInstallButtonState(false, "Installing...");
+
+                using (var webClient = new System.Net.WebClient())
+                {
+                    webClient.DownloadFileCompleted += UpdateRiftCompletedCallback;
+                    webClient.DownloadProgressChanged += RiftUpdateProgressChanged;
+                    await webClient.DownloadFileTaskAsync(new Uri(cloudData.Latest), RIFT_ZIP);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Update error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error finishing download: {ex}");
-            }
         }
-        private void DownloadRiftCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+
+        public void RiftUpdateProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e)
+        {
+            Status.Text = $"Status: Updating Rift - {e.ProgressPercentage}%";
+        }
+
+        public void RiftDownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e)
+        {
+            Status.Text = $"Status: Installing Rift - {e.ProgressPercentage}%";
+        }
+
+        private async void UpdateRiftCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             try
             {
-                string gzip = "Rift.zip";
-                ZipFile.ExtractToDirectory(gzip, @"./Rift");
-                File.Delete(gzip);
-                FinalizeRiftInstall();
+                if (e.Error != null)
+                {
+                    throw e.Error;
+                }
+
+                await ExtractAndFinalizeUpdateAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error finishing download: {ex}");
+                MessageBox.Show($"Update completion error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void FinalizeRiftInstall()
+
+        private async Task ExtractAndFinalizeUpdateAsync()
+        {
+            var versionData = await File.ReadAllTextAsync(Static.XenonSilicon);
+            var cloudData = JsonConvert.DeserializeObject<Services.RICloud>(versionData);
+
+            ZipFile.ExtractToDirectory(RIFT_ZIP, RIFT_FOLDER);
+            File.Delete(RIFT_ZIP);
+
+            var clientVersion = new RICloud { ClientVer = cloudData.ClientVer };
+            var versionFile = Path.Combine(BasePath, RIFT_VERSION_FILE);
+            await File.WriteAllTextAsync(versionFile, JsonConvert.SerializeObject(clientVersion));
+
+            Status.Text = "";
+            SetInstallButtonState(false, "Installed");
+            ShowToast("Rift Installer", "We've finished the update, you can use Rift normally again.");
+            XenonEnums.xenonStatus = XenonEnums.XenonStatus.Idle;
+        }
+
+        private async void DownloadRiftCompletedCallback(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             try
             {
-                string JSData = File.ReadAllText(Static.XenonSilicon);
-                Services.RICloud JSD = JsonConvert.DeserializeObject<Services.RICloud>(JSData);
+                if (e.Error != null)
+                {
+                    throw e.Error;
+                }
+
+                ZipFile.ExtractToDirectory(RIFT_ZIP, RIFT_FOLDER);
+                File.Delete(RIFT_ZIP);
+                await FinalizeRiftInstallAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Installation completion error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task FinalizeRiftInstallAsync()
+        {
+            try
+            {
+                var versionData = await File.ReadAllTextAsync(Static.XenonSilicon);
+                var cloudData = JsonConvert.DeserializeObject<Services.RICloud>(versionData);
+
                 SetEnvironmentVariable();
+
                 Status.Text = "Creating desktop icon for Rift";
-                IShellLink link = (IShellLink)new ShellLink();
-                link.SetDescription("Rift Launcher");
-                link.SetPath(Environment.CurrentDirectory + "\\Rift\\Rift.exe");
-                link.SetWorkingDirectory(Environment.CurrentDirectory + "\\Rift");
-                link.SetIconLocation(System.Reflection.Assembly.GetExecutingAssembly().Location, 0);
-                IPersistFile file = (IPersistFile)link;
-                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
-                //horrid
-                File.WriteAllText(Static.XenonBase + "RiftClientVersion.json", "{ \"ClientVer\":\"" + JSD.ClientVer + "\" }");
-                new ToastContentBuilder()
-                    .AddArgument("action", "viewConversation")
-                    .AddArgument("conversationId", 9813)
-                    .AddText("Rift Installer")
-                    .AddText("Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!")
-                    .SetToastDuration(ToastDuration.Long)
-                    .Show();
+                CreateDesktopShortcut();
+
+                var versionFile = Path.Combine(BasePath, RIFT_VERSION_FILE);
+                await File.WriteAllTextAsync(versionFile, JsonConvert.SerializeObject(new RICloud { ClientVer = cloudData.ClientVer }));
+
                 Status.Text = "";
-                InstallButton.Content = "Installed";
-                InstallButton.IsEnabled = false;
+                SetInstallButtonState(false, "Installed");
+                ShowToast("Rift Installer",
+                    "Rift has been successfully installed and an icon to start Rift has been added to your desktop! Enjoy!",
+                    ToastDuration.Long);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Finishing the download failed! Error message: " + ex.Message);
-                this.Close();
+                MessageBox.Show($"Finalization error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
             }
+        }
+
+        private void CreateDesktopShortcut()
+        {
+            var link = (IShellLink)new ShellLink();
+            link.SetDescription("Rift Launcher");
+            link.SetPath(Path.Combine(Environment.CurrentDirectory, RIFT_FOLDER, RIFT_EXE));
+            link.SetWorkingDirectory(Path.Combine(Environment.CurrentDirectory, RIFT_FOLDER));
+            link.SetIconLocation(System.Reflection.Assembly.GetExecutingAssembly().Location, 0);
+
+            var file = (IPersistFile)link;
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            file.Save(Path.Combine(desktopPath, "Rift.lnk"), false);
         }
 
         private void SetEnvironmentVariable()
         {
             Status.Text = "Checking if CPU fix is needed";
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENSSL_ia32cap")))
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENSSL_ia32cap")))
             {
                 Status.Text = "CPU fix is needed, applying fix";
-                Environment.SetEnvironmentVariable("OPENSSL_ia32cap", "~0x20000000", EnvironmentVariableTarget.Machine);
-                Status.Text = "CPU fix applied";
+                try
+                {
+                    Environment.SetEnvironmentVariable("OPENSSL_ia32cap", "~0x20000000", EnvironmentVariableTarget.Machine);
+                    Status.Text = "CPU fix applied";
+                }
+                catch
+                {
+                    Status.Text = "CPU fix failed (may require admin rights)";
+                }
             }
-            Status.Text = "CPU fix is not needed, finishing up";
+            else
+            {
+                Status.Text = "CPU fix is not needed, finishing up";
+            }
         }
+
         [ComImport]
         [Guid("00021401-0000-0000-C000-000000000046")]
-        internal class ShellLink
-        {
-        }
+        internal class ShellLink { }
 
         [ComImport]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
